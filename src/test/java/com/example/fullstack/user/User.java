@@ -14,14 +14,24 @@ public class User extends PanacheEntity {
     public String name;
     @Column(nullable = false)
     String password;
+    @Column(nullable = false)
+    public String email;
+
+    @Column(nullable = false)
+    public String phone;
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     public ZonedDateTime created;
     @Version
     public int version;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns =
-    @JoinColumn(name = "id"))
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "role")
     public List<String> roles;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_projects", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "project")
+    public List<String> projects;
+
 }
