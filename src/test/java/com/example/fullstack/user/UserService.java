@@ -35,12 +35,25 @@ public class UserService {
         return User.<User>findById(user.id).onItem().ifNotNull().failWith(() -> new ObjectNotFoundException(user.id, User.class.getName()));
     }
     @ReactiveTransactional
-    public Uni<User> delete(Long id) {
-        return User.<User>findById(id).onItem().ifNotNull().transformToUni(u -> u.delete().onItem().transformToUni(v -> Uni.createFrom().item(u)));
+    public Uni<Void> delete(long id) {
+        return findById(id)
+                .chain(u -> Uni.combine().all().unis(
+                                        Task.delete("user.id", u.id),
+                                        Process.delete("user.id", u.id)
+                                ).asTuple()
+                                .chain(t -> u.delete())
+                );
     }
     public Uni<User> getActiveUser(){
         return User.find("active",true).firstResult();
 }
 
 
+    public Uni<User> getCurrentUser() {
+        return User.find("active",true).firstResult();
+    }
+
+    public Uni<User> create(User user) {
+        return user.persistAndFlush().onItem().transformToUni(u -> Uni.createFrom().item(user));
+    }
 }
