@@ -1,4 +1,3 @@
-package com.acme;
 
 import io.quarkus.runtime.annotations.QuarkusMain;
 import io.quarkus.runtime.Quarkus;
